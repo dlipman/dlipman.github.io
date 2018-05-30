@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="he">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="vue.js"></script>
+    <script src="axios.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Rubik:400,400i,700,700i" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Arimo:400,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
+
+    <link rel="stylesheet" type="text/css" href="styles.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script>
+        $(function() {
+            $('[data-toggle="popover"]').popover()
+        })
+    </script>
+</head>
+
+<body>
+<div id="app">
+    <div class="fixed-top">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-6">
+                    <h3 @click="toDicta" class="pointer">DICTA</h3>
+                    <span @click="toDicta" class="pointer mobile_block small_text">Analytical tools for Jewish texts </span>
+                </div>
+                <div class="col-6">
+                    <h2 @click="showTools = !showTools" class="pointer float-right small_text">
+                        Dicta tools
+                        <i class="material-icons md-16">keyboard_arrow_down</i>
+                    </h2>
+                    <ul :style="{display: showTools ? 'block' : 'none'}" class="dropdown-menu">
+                        <li><a class="f black" target="_blank" href="http://server.dicta.org.il/#/searchStart"> <span><img class="img" src="./assets/img1.png"></span> Search the Bible </a></li>
+                        <li><a class="f black" target="_blank" href=" http://dicta.org.il/nakdan/"> <span><img class="img" src="./assets/img3.png"></span> Nakdan </a></li>
+                        <li><a class="f black" target="_blank" href="http://server.dicta.org.il/#/classifyStart"> <span><img class="img" src="./assets/img2.png"></span> Classify Biblical Texts</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="header" class="container-fluid">
+        <div class="row">
+            <div class="col-6">
+                <a>
+                    <h2 @click="toHome" class="pointer circle">א|ב</h2>
+                    <h3 @click="toHome" class="pointer p text-white">Synoptic Text</h3>
+                </a>
+            </div>
+
+            <div class="col-6">
+                <button data-toggle="modal" data-target="#about" class="btn float-right">How to use </button>
+            </div>
+            <div class="modal fade in mypopup" id="about" tabindex="-1" role="dialog" aria-hidden="false">
+                    <div class="modal-dialog modal-lg">
+                      <!-- Modal content-->
+                      <div class="modal-content">
+                        <button type="button" class="close" data-dismiss="modal"><img src="./assets/cross.png"></button>
+                        <h1 class="f black"> How to use </h1>
+                        <p>The Synoptic Builder takes two or more texts and aligns the words within them so as to indicate where the deviations between them are. Simply upload your texts (either by drag-and-drop or by clicking on the upload area) and click "Start"!</p>
+                        <p>Results for the first 200 words are shown. (You can choose whether to show <b>all</b> of those results, or the ones that indicate <b>changes only</b>.) You can page through those 200, or you can <b>download the full results</b> file (in Excel format).</p>
+                      </div>
+                    </div>
+                  </div>
+                
+        </div>
+    </div>
+
+    <div class="home-container" v-if="screen === 'home'">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-8 pt-4 px-5 offset-2" id="center-card">
+                    <h2>
+                        <img src="Asset2.png" /> &nbsp; Upload or drag files</h2>
+                    <hr>
+                    <div v-for="(file, index) in filesReceived" :key="index" class="col-lg-2 col-sm-6 col-xs-12 mr-5 my-2 uploaded_file">
+                        <img @click="filesReceived.splice(index, 1)" class="pointer m-1" src="Asset3.png" />
+                        <img class="center-block my-4" src="Asset1.png" />
+                        <span class="text_16_black">{{ file.name }}</span>
+                    </div>
+                    <div class="col-lg-2 col-sm-6 col-xs-12 dashed_rect">
+                        <form ref="fileform" class="pointer" @click="clickInput">
+                        <input id="file-input" type="file" name="name" style="display: none;" multiple ref="inputEl" @change="pushInputtedFiles" />
+                        <span class="plus">+</span>
+                        <p class="text-center text-dark-gray">Upload File</p>
+                        </form>
+                    </div>
+                    <button class="btn btn_start align-bottom p" data-toggle="popover" data-placement="top" data-content="You must select 
+                minimum 2 files" @click="processFiles">Start</button>
+               </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="requesting-container" v-if="screen === 'requesting'">
+        <div class="v-spinner" v-show="loading">
+            <div class="v-clip"></div>
+        </div>
+        <div class="timeout" v-show="timedOut">
+            <p>The server took too long to respond.</p>
+            <button class="btn btn_back p" @click="screen='home'">Back to Upload Screen</button>
+        </div>
+        <div class="failure" v-show="failed">
+            <p>The server failed to provide the necessary response.</p>
+            <button class="btn btn_back p" @click="screen='home'">Back to Upload Screen</button>
+        </div>
+    </div>
+                
+    <div class="results-container" v-if="screen === 'results'">
+
+    <div class="container-fluid">
+        <div class="row row_border">
+            <div class="col-6">
+                <h3 class="mt-3 d-block">Showing 200 words
+                    <a v-bind:href="downloadHref">Download full results</a>
+                </h3>
+            </div>
+            <div class="col-6">
+
+                <div class="btn-group float-right mr-2 mt-1" role="group" aria-label="Basic example">
+                    <button type="button" class="btn btn-sm small_text btn_group" v-bind:class="showAll ? 'btn-primary' : 'btn-light'" @click="showAll = true">All</button>
+                    <button type="button" class="btn btn-sm small_text btn_group" v-bind:class="!showAll ? 'btn-primary' : 'btn-light'" @click="showAll = false">Changes only</button>
+                </div>
+                <p class="float-right mx-2">Show results</p>
+            </div>
+        </div>
+            <hr class="mx-2">
+        <div class="row mx-2">
+            <div class="container table_card col-12 mt-2">
+                <div class="row justify-content-between table_header">
+                    <div class="col-1"> </div>
+                    <div v-for="(columnHead, index) in columnHeads" :key="'head-'+index" class="col-1 overflow_text" data-toggle="tooltip" data-placement="bottom" v-bind:title="columnHead">{{ columnHead }}</div>
+                    <div v-bind:class="'col-'+(11-columnHeads.length)">
+                        <button class="btn btn_upload btn-sm float-right p" @click="filesReceived=[];screen='home'">Upload new files</button>
+                    </div>
+                </div>
+                <div v-for="(showRow, index) in thisPageRows" :key="'row-'+index">
+                    <div v-if="doShowRow(index)" class="row justify-content-between  tbody_row">
+                        <div class="col-1">{{ thisPageRowNumbers[index] }}</div>
+                        <div v-for="(col, colIndex) in showRow" :key="'col-'+colIndex" class="col-1 overflow_text">{{ col }}</div>
+                        <div v-bind:class="'col-'+(11-showRow.length)" class="align-self-end">
+                        </div>
+                    </div>
+                    <div v-else-if="doShowRow(index-1)">
+                        <div class="row yellow_row">
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                    </div>
+                </div>              
+            </div>
+        </div>
+    </div>
+
+    <div v-if="rowsPerPage < 200" class="container navigation">
+        <div class="row">
+            <nav class="center-block" aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item arrow">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">
+                                <i class="fa fa-chevron-left fa-chevron-left"></i>
+                            </span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                    </li>
+                    <li v-for="pageNum in pageNumsToShow" :key="pageNum" class="page-item">
+                        <a class="page-link" @click="currentPage = pageNum" href="#">{{ pageNum }}</a>
+                    </li>
+                    <li class="page-item arrow">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">
+                                <i class="fa fa-chevron-left fa-chevron-right"></i>
+                            </span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    </div>
+            
+    <div class="navbar fixed-bottom">
+        <hr>
+        <a href="http://dicta.org.il/aboutus-en.html" target="_blank" class="bottom_links small_text">About Dicta</a>
+        <a href="http://dicta.org.il/tos.html" target="_blank" class="bottom_links small_text">Terms of Service</a>
+        <a href="https://www.facebook.com/dictatools/" target="_blank">
+            <i class="fab fa-facebook-f mx-2"></i>
+        </a>
+    </div>
+</div>
+<script src="synoptic_app.js"></script>
+</body>
+
+</html>
