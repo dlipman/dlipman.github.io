@@ -1,4 +1,4 @@
-const baseUrl = 'https://synopsisserver.dicta.org.il/synopsis'
+const baseUrl = 'http://synopsisserver.dicta.org.il/synopsis'
 const urlExtend = '/api/synopsis'
 const urlUpload = '/uploadfile'
 
