@@ -151,7 +151,7 @@
                         <button class="btn btn_upload btn-sm float-right p" @click="filesReceived=[];screen='home'">Upload new files</button>
                     </div>
                 </div>
-                <div v-for="(showRow, index) in thisPageRows" :key="'row-'+index">
+                <template v-for="(showRow, index) in thisPageRows">
                     <div v-if="doShowRow(index)" class="row justify-content-between  tbody_row">
                         <div class="col-1">{{ thisPageRowNumbers[index] }}</div>
                         <div v-for="(col, colIndex) in showRow" :key="'col-'+colIndex" class="col-1 overflow_text">{{ col }}</div>
@@ -165,7 +165,7 @@
                             <span class="dot"></span>
                         </div>
                     </div>
-                </div>              
+                </template>              
             </div>
         </div>
     </div>
